@@ -1,0 +1,19 @@
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.dashboard-main {
+  flex: 1;
+  min-width: 0; /* important so long text/grids don't overflow the flex container */
+}
+
+.dashboard-content {
+  padding: 0 28px 40px 28px;
+}
+
+@media (max-width: 560px) {
+  .dashboard-content {
+    padding: 0 16px 30px 16px;
+  }
+}

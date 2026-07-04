@@ -1,0 +1,230 @@
+/* ---------------------------------------------------
+   Global styles + color variables
+   I kept all colors in one place (:root) so that
+   changing the theme later is easy - just edit here
+--------------------------------------------------- */
+:root {
+  /* main brand color - a teal/emerald tone instead of the usual purple */
+  --primary: #0d9488;
+  --primary-dark: #0f766e;
+  --primary-light: #2dd4bf;
+
+  /* used for the sidebar hero gradient */
+  --gradient-start: #0f766e;
+  --gradient-end: #2563eb;
+
+  --bg: #f4f7f6;
+  --card-bg: #ffffff;
+  --text-dark: #1e2530;
+  --text-muted: #667085;
+  --border: #e3e8e6;
+
+  --success-bg: #dcfce7;
+  --success-text: #15803d;
+  --warning-bg: #fef3c7;
+  --warning-text: #b45309;
+  --danger-bg: #fee2e2;
+  --danger-text: #b91c1c;
+  --info-bg: #dbeafe;
+  --info-text: #1d4ed8;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+
+  --shadow-card: 0 1px 3px rgba(16, 24, 40, 0.06), 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+
+/* basic reset - removes browser default spacing so our own css works consistently */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  font-family: "Inter", system-ui, sans-serif;
+  background-color: var(--bg);
+  color: var(--text-dark);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: "Poppins", "Inter", sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+}
+
+input, select {
+  font-family: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+/* small helper class I reuse in a few places for status pills */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge.success { background: var(--success-bg); color: var(--success-text); }
+.badge.warning { background: var(--warning-bg); color: var(--warning-text); }
+.badge.danger { background: var(--danger-bg); color: var(--danger-text); }
+.badge.info { background: var(--info-bg); color: var(--info-text); }
+
+/* generic button styles used across the app */
+.btn {
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+.btn-outline {
+  background: #fff;
+  border: 1px solid var(--border);
+  color: var(--text-dark);
+}
+
+.btn-outline:hover {
+  background: #f1f5f4;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.field-label {
+  display: block;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: var(--text-dark);
+}
+
+.field-input {
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: #fbfcfc;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.field-input:focus {
+  border-color: var(--primary);
+  background: #fff;
+}
+
+.field-input.error {
+  border-color: var(--danger-text);
+  background: #fff5f5;
+}
+
+.field-error {
+  color: var(--danger-text);
+  font-size: 12.5px;
+  margin-top: 6px;
+}
+
+.field-group {
+  margin-bottom: 20px;
+}
+
+/* ---- shared "stat card" styles, used on both Dashboard and Orders pages ---- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+}
+
+.stat-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+  background: #e6f4f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+  margin-bottom: 14px;
+}
+
+.stat-label {
+  color: var(--text-muted);
+  font-size: 13.5px;
+}
+
+.stat-value {
+  font-size: 26px;
+  margin: 6px 0;
+}
+
+.stat-note {
+  font-size: 12.5px;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* shared empty-state box used on Cart / Orders / Checkout / ProductDetails pages */
+.empty-state {
+  text-align: center;
+  padding: 70px 20px;
+  background: #fff;
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-size: 15px;
+}

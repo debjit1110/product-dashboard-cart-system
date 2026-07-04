@@ -1,0 +1,160 @@
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+}
+
+/* left side - the colorful hero / welcome section */
+.auth-hero {
+  flex: 1;
+  background: linear-gradient(160deg, var(--gradient-start), var(--gradient-end));
+  color: #fff;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* couple of soft circles in the background just to make the hero less flat */
+.auth-hero::before,
+.auth-hero::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.auth-hero::before {
+  width: 320px;
+  height: 320px;
+  top: -100px;
+  right: -80px;
+}
+
+.auth-hero::after {
+  width: 200px;
+  height: 200px;
+  bottom: 60px;
+  left: -60px;
+}
+
+.auth-logo {
+  background: rgba(255, 255, 255, 0.18);
+  width: 44px;
+  height: 44px;
+  font-size: 20px;
+}
+
+.auth-brand {
+  font-weight: 700;
+  font-size: 15px;
+  margin-top: 10px;
+  display: block;
+}
+
+.auth-hero-title {
+  font-size: 42px;
+  margin-top: auto;
+  max-width: 480px;
+  line-height: 1.2;
+}
+
+.auth-hero-text {
+  margin-top: 18px;
+  max-width: 460px;
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+.auth-stats {
+  display: flex;
+  gap: 40px;
+  margin-top: 40px;
+}
+
+.auth-stats strong {
+  font-size: 26px;
+  display: block;
+}
+
+.auth-stats span {
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+/* right side - the actual form */
+.auth-form-side {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background: var(--bg);
+}
+
+.auth-form-box {
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-form-box h2 {
+  font-size: 28px;
+}
+
+.auth-subtitle {
+  color: var(--text-muted);
+  margin: 8px 0 26px 0;
+  font-size: 14px;
+}
+
+.form-alert {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  margin-bottom: 18px;
+}
+
+.form-alert.success {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.guest-btn {
+  margin-top: 12px;
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 22px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.auth-switch a {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* on small screens, stack the hero on top and hide some of the decorative stuff */
+@media (max-width: 900px) {
+  .auth-page {
+    flex-direction: column;
+  }
+  .auth-hero {
+    padding: 34px 24px;
+    min-height: 260px;
+  }
+  .auth-hero-title {
+    font-size: 28px;
+    margin-top: 24px;
+  }
+  .auth-stats {
+    margin-top: 24px;
+    gap: 26px;
+  }
+  .auth-form-side {
+    padding: 30px 20px 50px 20px;
+  }
+}
