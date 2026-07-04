@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { products } from "../data/products";
+import { addActivity } from "../data/activity";
 
 const CartContext = createContext();
 
@@ -29,6 +30,10 @@ export function CartProvider({ children }) {
   }
 
   function addToCart(productId) {
+    // grabbing the product name here just so the activity log reads nicely
+    // (e.g. "Wireless Headphone added to cart" instead of just an id number)
+    const product = products.find((p) => p.id === productId);
+
     setCartItems((prev) => {
       const existing = prev.find((item) => item.productId === productId);
       if (existing) {
@@ -39,10 +44,14 @@ export function CartProvider({ children }) {
       }
       return [...prev, { productId, qty: 1 }];
     });
+
+    if (product) addActivity("🛒", `${product.name} added to cart`);
   }
 
   function removeFromCart(productId) {
+    const product = products.find((p) => p.id === productId);
     setCartItems((prev) => prev.filter((item) => item.productId !== productId));
+    if (product) addActivity("❌", `${product.name} removed from cart`);
   }
 
   function increaseQty(productId) {
