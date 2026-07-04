@@ -9,23 +9,43 @@ import "./Products.css";
 // this list updates automatically
 const categories = ["All", ...new Set(allProducts.map((p) => p.category))];
 
+// pretending this is a real API call (returns a Promise like fetch() would).
+// forceFail lets us test the error UI on purpose since real network errors
+// don't happen on demand with dummy/local data
+function fetchProducts(forceFail = false) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (forceFail) {
+        reject(new Error("Could not load products. Please check your connection."));
+      } else {
+        resolve(allProducts);
+      }
+    }, 600);
+  });
+}
+
 export default function Products() {
   // ---- these 3 states control the search/filter/sort ----
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortOrder, setSortOrder] = useState("none"); // "none" | "low-high" | "high-low"
 
-  // the task says to "fetch products from a dummy API", so I am faking that here
-  // with a small setTimeout just to show a loading spinner for a moment
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null); // holds the error message, or null if all good
+
+  // pulling data out into its own function so the "Retry" button can call it again
+  function loadProducts(forceFail = false) {
+    setLoading(true);
+    setError(null);
+    fetchProducts(forceFail)
+      .then((data) => setProducts(data))
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setProducts(allProducts);
-      setLoading(false);
-    }, 500);
-    return () => clearTimeout(timer); // cleanup in case component unmounts early
+    loadProducts();
   }, []);
 
   // running the search + filter + sort together every render

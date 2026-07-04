@@ -5,30 +5,21 @@ import ProductCard from "../components/ProductCard";
 import { products } from "../data/products";
 import { useCart } from "../context/CartContext";
 import { getOrders } from "../data/orders";
+import { getActivity } from "../data/activity";
 import "./Dashboard.css";
 
 export default function Dashboard() {
-  const { cartItems, totalItemsCount, total } = useCart();
+  const { totalItemsCount, total } = useCart();
 
   // useMemo here so we don't re-read localStorage on every single render,
-  // only when the component mounts (orders list won't change while sitting on this page)
+  // only when the component mounts
   const orders = useMemo(() => getOrders(), []);
+  // this is now a REAL activity log (see src/data/activity.js) that gets written to
+  // every time someone adds/removes a cart item or places an order - not guessed
+  const activity = useMemo(() => getActivity(), []);
 
   // just showing the first 4 products on the dashboard as a "preview"
   const previewProducts = products.slice(0, 4);
-
-  // building a simple "recent activity" feed out of cart items + latest order
-  // (not a real activity log, just something that looks realistic for the demo)
-  const activity = [
-    ...cartItems.slice(0, 2).map((item) => ({
-      icon: "🛒",
-      text: `${item.name} is in your cart`,
-      time: "just now",
-    })),
-    ...(orders[0]
-      ? [{ icon: "✅", text: `Order ${orders[0].id} placed`, time: "recently" }]
-      : []),
-  ];
 
   return (
     <DashboardLayout title="Dashboard" subtitle="Welcome back, here's your store overview">
