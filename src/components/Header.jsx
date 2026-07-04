@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "./Header.css";
@@ -6,27 +7,34 @@ export default function Header({ title, subtitle, onMenuClick }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  // just taking the first letters of the name to show inside the round avatar
-  // example: "Sabyasachi Saha" -> "SS"
-  const initials = user?.name
-    ? user.name
-        .split(" ")
-        .map((word) => word[0])
-        .join("")
-        .slice(0, 2)
-        .toUpperCase()
-    : "U";
+  /**
+   * Generates a 2-letter uppercase string from the user's name.
+   * Example: "Sabyasachi Saha" -> "SS"
+   */
+  const initials = useMemo(() => {
+    if (!user?.name) return "U";
+    
+    return user.name
+      .split(" ")
+      .map((word) => word[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+  }, [user?.name]);
 
-  function handleLogout() {
+  const handleLogout = () => {
     logout();
     navigate("/login");
-  }
+  };
 
   return (
     <header className="topbar">
       <div className="topbar-left">
-        {/* hamburger button only visible on mobile to open the sidebar */}
-        <button className="hamburger-btn" onClick={onMenuClick}>
+        <button 
+          className="hamburger-btn" 
+          onClick={onMenuClick}
+          aria-label="Open sidebar menu"
+        >
           ☰
         </button>
         <div>
@@ -40,15 +48,23 @@ export default function Header({ title, subtitle, onMenuClick }) {
           className="topbar-search"
           type="text"
           placeholder="Search products, orders..."
+          aria-label="Search site content"
         />
-        <button className="icon-btn" title="Notifications">🔔</button>
+        
+        <button className="icon-btn" title="Notifications" aria-label="Notifications">
+          🔔
+        </button>
+
         <div className="topbar-user">
           <div className="user-info">
             <span className="user-name">{user?.name || "Guest"}</span>
-            <span className="user-role">Admin</span>
+            <span className="user-role">User</span>
           </div>
-          <div className="user-avatar">{initials}</div>
+          <div className="user-avatar" aria-hidden="true">
+            {initials}
+          </div>
         </div>
+
         <button className="btn btn-outline logout-btn" onClick={handleLogout}>
           Logout
         </button>

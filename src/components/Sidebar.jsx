@@ -1,9 +1,7 @@
 import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
 
-// simple array of menu items - makes it easy to add/remove a link later
-// instead of writing the same <NavLink> markup 5 times
-const menuItems = [
+const MENU_ITEMS = [
   { to: "/dashboard", label: "Dashboard", icon: "🏠" },
   { to: "/products", label: "Products", icon: "📦" },
   { to: "/cart", label: "Cart", icon: "🛒" },
@@ -14,12 +12,17 @@ const menuItems = [
 export default function Sidebar({ open, onClose }) {
   return (
     <>
-      {/* dark overlay only shows on mobile when sidebar is open, clicking it closes the sidebar */}
-      {open && <div className="sidebar-overlay" onClick={onClose}></div>}
+      {open && (
+        <div 
+          className="sidebar-overlay" 
+          onClick={onClose} 
+          role="presentation"
+        />
+      )}
 
-      <aside className={`sidebar ${open ? "sidebar-open" : ""}`}>
+      <aside className={`sidebar ${open ? "sidebar-open" : ""}`} aria-hidden={!open}>
         <div className="sidebar-logo">
-          <div className="logo-box">C</div>
+          <div className="logo-box" aria-hidden="true">C</div>
           <div>
             <div className="logo-text">CartNest</div>
             <div className="logo-sub">Store Dashboard</div>
@@ -27,15 +30,19 @@ export default function Sidebar({ open, onClose }) {
         </div>
 
         <nav className="sidebar-menu">
-          {menuItems.map((item) => (
+          {MENU_ITEMS.map(({ to, label, icon }) => (
             <NavLink
-              key={item.to}
-              to={item.to}
+              key={to}
+              to={to}
               onClick={onClose}
-              className={({ isActive }) => "sidebar-link" + (isActive ? " active" : "")}
+              className={({ isActive }) => 
+                `sidebar-link ${isActive ? "active" : ""}`.trim()
+              }
             >
-              <span className="sidebar-icon">{item.icon}</span>
-              {item.label}
+              <span className="sidebar-icon" aria-hidden="true">
+                {icon}
+              </span>
+              <span className="sidebar-label">{label}</span>
             </NavLink>
           ))}
         </nav>

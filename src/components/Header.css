@@ -2,24 +2,32 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 16px;
   padding: 20px 28px;
-  flex-wrap: wrap;
+}
+
+.topbar-left,
+.topbar-right {
+  display: flex;
+  align-items: center;
 }
 
 .topbar-left {
-  display: flex;
-  align-items: center;
   gap: 14px;
+}
+
+.topbar-right {
+  gap: 12px;
 }
 
 .hamburger-btn {
   display: none;
+  width: 38px;
+  height: 38px;
   background: #fff;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  width: 38px;
-  height: 38px;
   font-size: 16px;
 }
 
@@ -29,25 +37,19 @@
 }
 
 .page-subtitle {
+  margin-top: 2px;
   color: var(--text-muted);
   font-size: 13.5px;
-  margin-top: 2px;
-}
-
-.topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
 }
 
 .topbar-search {
   width: 260px;
   padding: 10px 16px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
   background: #fff;
-  font-size: 13.5px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
   outline: none;
+  font-size: 13.5px;
 }
 
 .topbar-search:focus {
@@ -55,11 +57,11 @@
 }
 
 .icon-btn {
+  width: 38px;
+  height: 38px;
   background: #fff;
   border: 1px solid var(--border);
   border-radius: 50%;
-  width: 38px;
-  height: 38px;
   font-size: 15px;
 }
 
@@ -67,10 +69,10 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  padding: 6px 14px 6px 6px;
   background: #fff;
   border: 1px solid var(--border);
   border-radius: 999px;
-  padding: 6px 14px 6px 6px;
 }
 
 .user-info {
@@ -85,21 +87,21 @@
 }
 
 .user-role {
-  font-size: 11px;
   color: var(--text-muted);
+  font-size: 11px;
 }
 
 .user-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #f97316, #f59e0b);
-  color: #fff;
-  font-size: 12.5px;
-  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #f97316, #f59e0b);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
 }
 
 .logout-btn {
@@ -110,9 +112,8 @@
   .hamburger-btn {
     display: inline-block;
   }
-  .topbar-search {
-    display: none;
-  }
+
+  .topbar-search,
   .user-info {
     display: none;
   }
@@ -122,9 +123,11 @@
   .topbar {
     padding: 16px;
   }
+
   .page-title {
     font-size: 19px;
   }
+
   .logout-btn span {
     display: none;
   }

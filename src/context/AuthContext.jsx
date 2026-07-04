@@ -1,55 +1,65 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useMemo } from "react";
 
-// I am creating this context so that any page/component can check
-// "is user logged in" and "who is logged in" without passing props everywhere
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
-// keys I am using in localStorage, keeping them in one place so I don't
-// accidentally spell them differently somewhere else in the app
-const USERS_KEY = "cartnest_users";
-const SESSION_KEY = "cartnest_session";
+const STORAGE_KEYS = {
+  USERS: "cartnest_users",
+  SESSION: "cartnest_session",
+};
 
 export function AuthProvider({ children }) {
-  // this holds the currently logged in user (or null if nobody is logged in)
   const [user, setUser] = useState(null);
-  // loading is true only for the first render, while we check localStorage
   const [loading, setLoading] = useState(true);
 
-  // on first load, check if a session already exists in localStorage
-  // this is what keeps the user logged in even after a page refresh
+  // Synchronize local authentication state with browser storage on mount
   useEffect(() => {
-    const savedSession = localStorage.getItem(SESSION_KEY);
-    if (savedSession) {
-      setUser(JSON.parse(savedSession));
+    try {
+      const savedSession = localStorage.getItem(STORAGE_KEYS.SESSION);
+      if (savedSession) {
+        setUser(JSON.parse(savedSession));
+      }
+    } catch (error) {
+      console.error("Failed to parse authentication session:", error);
+      localStorage.removeItem(STORAGE_KEYS.SESSION);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
-  // helper to read the list of registered users from localStorage
-  function getUsers() {
-    const raw = localStorage.getItem(USERS_KEY);
-    return raw ? JSON.parse(raw) : [];
-  }
+  /**
+   * Retrieves the current array of registered users from localStorage.
+   */
+  const getUsers = () => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEYS.USERS);
+      return raw ? JSON.parse(raw) : [];
+    } catch (error) {
+      console.error("Failed to read user directory:", error);
+      return [];
+    }
+  };
 
-  // register a brand new account
-  function register({ name, email, password }) {
+  /**
+   * Registers a new user account if the email is not already in use.
+   */
+  const register = ({ name, email, password }) => {
     const users = getUsers();
-
-    // don't allow two accounts with the same email
     const alreadyExists = users.some((u) => u.email === email);
+    
     if (alreadyExists) {
       return { success: false, message: "An account with this email already exists." };
     }
 
-    const newUser = { name, email, password };
-    users.push(newUser);
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    users.push({ name, email, password });
+    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
 
     return { success: true };
-  }
+  };
 
-  // log the user in - checks email/password against the saved users list
-  function login({ email, password }) {
+  /**
+   * Authenticates user credentials against the user database.
+   */
+  const login = ({ email, password }) => {
     const users = getUsers();
     const found = users.find((u) => u.email === email && u.password === password);
 
@@ -57,27 +67,32 @@ export function AuthProvider({ children }) {
       return { success: false, message: "Invalid email or password." };
     }
 
-    // don't store the password in the "session", just name + email is enough
+    // Exclude password field from active session details for security compliance
     const sessionUser = { name: found.name, email: found.email };
-    localStorage.setItem(SESSION_KEY, JSON.stringify(sessionUser));
+    localStorage.setItem(STORAGE_KEYS.SESSION, JSON.stringify(sessionUser));
     setUser(sessionUser);
+    
     return { success: true };
-  }
+  };
 
-  // quick login for people who don't want to register (demo/testing purpose)
-  function loginAsGuest() {
-    const guest = { name: "Sabyasachi Saha", email: "guest@cartnest.com" };
-    localStorage.setItem(SESSION_KEY, JSON.stringify(guest));
+  /**
+   * Establishes a temporary guest session for application demonstration.
+   */
+  const loginAsGuest = () => {
+    const guest = { name: "Guest", email: "guest@cartnest.com" };
+    localStorage.setItem(STORAGE_KEYS.SESSION, JSON.stringify(guest));
     setUser(guest);
+    
     return { success: true };
-  }
+  };
 
-  function logout() {
-    localStorage.removeItem(SESSION_KEY);
+  const logout = () => {
+    localStorage.removeItem(STORAGE_KEYS.SESSION);
     setUser(null);
-  }
+  };
 
-  const value = {
+  // Memoize the value object to prevent unnecessary re-renders of consuming components
+  const contextValue = useMemo(() => ({
     user,
     isLoggedIn: !!user,
     loading,
@@ -85,12 +100,19 @@ export function AuthProvider({ children }) {
     register,
     logout,
     loginAsGuest,
-  };
+  }), [user, loading]);
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={contextValue}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
-// custom hook so pages can just do useAuth() instead of importing useContext + AuthContext every time
 export function useAuth() {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be utilized within an AuthProvider");
+  }
+  return context;
 }
