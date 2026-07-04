@@ -4,6 +4,7 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { saveOrder, generateOrderId } from "../data/orders";
+import { addActivity } from "../data/activity";
 import "./Checkout.css";
 
 export default function Checkout() {
@@ -22,6 +23,7 @@ export default function Checkout() {
   });
   const [errors, setErrors] = useState({});
   const [placing, setPlacing] = useState(false);
+  const [orderPlaced, setOrderPlaced] = useState(false); // controls the success screen
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -85,12 +87,36 @@ export default function Checkout() {
     };
 
     saveOrder(order);
+    addActivity("✅", `Order ${order.id} placed`);
 
-    // small fake delay so it feels like something is actually happening on submit
+    // show a proper "success" screen first instead of jumping straight to Orders -
+    // the task specifically asks for a success state, not just a silent redirect
     setTimeout(() => {
+      setPlacing(false);
+      setOrderPlaced(true);
       clearCart();
-      navigate("/orders");
     }, 700);
+  }
+
+  // ---- success screen shown right after the order is placed ----
+  if (orderPlaced) {
+    return (
+      <DashboardLayout title="Checkout">
+        <div className="success-state">
+          <div className="success-icon">✅</div>
+          <h2>Order placed successfully!</h2>
+          <p>Your order has been confirmed and saved to your order history.</p>
+          <div className="success-actions">
+            <button className="btn btn-primary" onClick={() => navigate("/orders")}>
+              View Orders
+            </button>
+            <button className="btn btn-outline" onClick={() => navigate("/dashboard")}>
+              Back to Dashboard
+            </button>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
   }
 
   if (cartItems.length === 0) {
